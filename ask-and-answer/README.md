@@ -5,9 +5,7 @@
 
 `HTML`
 
-`CSS`
-
-`Bootstrap`
+`Bootstrap` -> (`CSS`,`JS`)
 
 `Node.js`
 
