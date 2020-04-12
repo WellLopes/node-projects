@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser'); //Ctach informations forms
 const connection = require('./database/database');
-const perguntaModel = require('./database/Ask'); //import code to catch database information
+const pergunta = require('./database/Ask'); //import code to catch database information
 
 //DataBase
 connection
@@ -32,9 +32,17 @@ app.get('/perguntar',(req, res) => {
 });
 
 app.post('/saveanswer', (req, res) => {
-    let tittle = req.body.tittle;
-    let description = req.body.description;
-    res.send(`Forms get! Title: ${tittle}. Description: ${description}`);
+    //Receive forms information
+    let titulo = req.body.titulo; // save them into this variables
+    let descricao = req.body.descricao;
+    
+    //Insert information into our database
+    pergunta.create({
+        titulo: titulo,
+        descricao: descricao
+    }).then(() => { //if okay, redirect to first page
+        res.redirect('/');
+    });
 });
 
 app.listen(8080, () => {
