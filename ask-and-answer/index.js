@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser'); //Ctach informations forms
 const connection = require('./database/database');
 const pergunta = require('./database/Ask'); //import code to catch database information
+const respota = require('./database/Respota');
 
 //DataBase
 connection
@@ -57,7 +58,9 @@ app.get('/pergunta/:id', (req, res) => { //Search on db specific claimed id and 
         where: {id: id}
     }).then(pergunta => {
         if(pergunta != undefined){ //answer finded
-            res.render('pergunta');
+            res.render('pergunta', {
+                pergunta: pergunta
+            });
         }else{  //answer not found
             res.redirect('/');
         }
