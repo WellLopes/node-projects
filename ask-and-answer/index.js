@@ -24,7 +24,13 @@ app.use(bodyParser.json());
 
 // Routes
 app.get('/',(req, res) => {
-   res.render('index');
+    pergunta.findAll({ raw: true, order:[ //findAll: all information on db || //raw: search only "relevante" informations || // order: order our array of ask on decreasing way
+        ['id','DESC']
+    ]}).then(pergunta => {
+        res.render('index',{
+            pergunta: pergunta
+        });
+    });
 });
 
 app.get('/perguntar',(req, res) => {
@@ -43,6 +49,19 @@ app.post('/saveanswer', (req, res) => {
     }).then(() => { //if okay, redirect to first page
         res.redirect('/');
     });
+});
+
+app.get('/pergunta/:id', (req, res) => { //Search on db specific claimed id and show me
+    const id = req.params.id;
+    pergunta.findOne({
+        where: {id: id}
+    }).then(pergunta => {
+        if(pergunta != undefined){ //answer finded
+            res.render('pergunta');
+        }else{  //answer not found
+            res.redirect('/');
+        }
+    })
 });
 
 app.listen(8080, () => {
