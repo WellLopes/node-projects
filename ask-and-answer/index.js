@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser'); //Ctach informations forms
 const connection = require('./database/database');
 const pergunta = require('./database/Ask'); //import code to catch database information
-const respota = require('./database/Respota');
+const Resposta = require('./database/Resposta');
 
 //DataBase
 connection
@@ -58,13 +58,33 @@ app.get('/pergunta/:id', (req, res) => { //Search on db specific claimed id and 
         where: {id: id}
     }).then(pergunta => {
         if(pergunta != undefined){ //answer finded
-            res.render('pergunta', {
-                pergunta: pergunta
+            
+            Resposta.findAll({ //show answer allready write and show them with the same solicitation ask
+                where: { perguntaId: pergunta.id },
+                order: [ 
+                    ['id','DESC'] 
+                ]
+            }).then(respostas => {
+                res.render('pergunta', {
+                    pergunta: pergunta,
+                    respostas: respostas
+                });    
             });
         }else{  //answer not found
             res.redirect('/');
         }
     })
+});
+
+app.post('/responder', (req, res) => {
+    let corpo = req.body.corpo;
+    let perguntaId = req.body.pergunta;
+    Resposta.create({
+        corpo: corpo,
+        perguntaId: perguntaId
+    }).then(() => {
+        res.redirect(`/pergunta/${perguntaId}`)
+    });
 });
 
 app.listen(8080, () => {
